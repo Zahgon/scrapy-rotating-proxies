@@ -49,20 +49,7 @@ class Proxies(object):
 
     def get_random(self):
         """ Return a random available proxy (either good or unchecked) """
-
-        available = self.unchecked | self.good
-        if not available:
-            return None
-
-        unused = available - self.used
-        if not unused:
-            self.used.clear()
-            unused = available
-
-        proxy = random.choice(list(unused))
-        self.used.add(proxy)
-
-        return proxy
+        pass
 
     def get_proxy(self, proxy_address):
         """
@@ -70,79 +57,35 @@ class Proxies(object):
         ``proxy_address``. If ``proxy_address`` is unkonwn or empty,
         return None.
         """
-        if not proxy_address:
-            return None
-        hostport = extract_proxy_hostport(proxy_address)
-        return self.proxies_by_hostport.get(hostport, None)
+        pass
 
     def mark_dead(self, proxy, _time=None):
         """ Mark a proxy as dead """
-        if proxy not in self.proxies:
-            logger.warn("Proxy <%s> was not found in proxies list" % self._clean_proxy(proxy))
-            return
-
-        if proxy in self.good:
-            logger.debug("GOOD proxy became DEAD: <%s>" % self._clean_proxy(proxy))
-        else:
-            logger.debug("Proxy <%s> is DEAD" % self._clean_proxy(proxy))
-
-        self.unchecked.discard(proxy)
-        self.good.discard(proxy)
-        self.dead.add(proxy)
-
-        now = _time or time.time()
-        state = self.proxies[proxy]
-        state.backoff_time = self.backoff(state.failed_attempts)
-        state.next_check = now + state.backoff_time
-        state.failed_attempts += 1
+        pass
 
     def mark_good(self, proxy):
         """ Mark a proxy as good """
-        if proxy not in self.proxies:
-            logger.warn("Proxy <%s> was not found in proxies list" % self._clean_proxy(proxy))
-            return
-
-        if proxy not in self.good:
-            logger.debug("Proxy <%s> is GOOD" % self._clean_proxy(proxy))
-
-        self.unchecked.discard(proxy)
-        self.dead.discard(proxy)
-        self.good.add(proxy)
-        self.proxies[proxy].failed_attempts = 0
+        pass
 
     def reanimate(self, _time=None):
         """ Move dead proxies to unchecked if a backoff timeout passes """
-        n_reanimated = 0
-        now = _time or time.time()
-        for proxy in list(self.dead):
-            state = self.proxies[proxy]
-            assert state.next_check is not None
-            if state.next_check <= now:
-                self.dead.remove(proxy)
-                self.unchecked.add(proxy)
-                n_reanimated += 1
-        return n_reanimated
+        pass
 
     def reset(self):
         """ Mark all dead proxies as unchecked """
-        for proxy in list(self.dead):
-            self.dead.remove(proxy)
-            self.unchecked.add(proxy)
+        pass
 
     def _clean_proxy(self, proxy):
         """ Clean proxy so that it can be safely used in logs """
-        return extract_proxy_hostport(proxy)
+        pass
 
     @property
     def mean_backoff_time(self):
-        if not self.dead:
-            return 0.0
-        total_backoff = sum(self.proxies[p].backoff_time for p in self.dead)
-        return float(total_backoff) / len(self.dead)
+        pass
 
     @property
     def reanimated(self):
-        return [p for p in self.unchecked if self.proxies[p].failed_attempts]
+        pass
 
     def __str__(self):
         n_reanimated = len(self.reanimated)

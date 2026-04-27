@@ -8,11 +8,7 @@ class BanDetectionPolicy(object):
     NOT_BAN_EXCEPTIONS = (IgnoreRequest,)
 
     def response_is_ban(self, request, response):
-        if response.status not in self.NOT_BAN_STATUSES:
-            return True
-        if response.status == 200 and not len(response.body):
-            return True
-        return False
+        pass
 
     def exception_is_ban(self, request, exception):
-        return not isinstance(exception, self.NOT_BAN_EXCEPTIONS)
+        pass
